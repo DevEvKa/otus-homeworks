@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>Домашние работы по курсу "Vue.js разработчик"</h1>
   </div>
 </template>
 
