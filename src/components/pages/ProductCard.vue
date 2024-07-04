@@ -1,14 +1,14 @@
 <template>
 <div class="product-card">
   <div class="product-card__top">
-    <a href="#" class="product-card__image">
+    <div class="product-card__image">
       <img :src="product.image" :alt="product.title">
-    </a>
+    </div>
   </div>
   <div class="product-card__bottom">
-    <p class="product-card__title">
+    <h4 class="product-card__title">
       {{ product.title }}
-    </p>
+    </h4>
     <div class="product-card__row">
       <p class="product-card__rating">{{ product.rating?.rate }}</p>
       <div  class="product-card__price">
@@ -96,7 +96,6 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
-        transition: 0.2s;
       }
     }
     

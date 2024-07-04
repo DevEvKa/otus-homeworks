@@ -4,12 +4,14 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg"/>
+    <a href="/about"><img alt="Vue logo" class="logo" src="@/assets/logo.svg" /></a>
 
     <div class="wrapper">
       <nav>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/catalog">Catalog</RouterLink>
+        <RouterLink to="/cart">Cart</RouterLink>
+        <RouterLink to="/admin">AdminPage</RouterLink>
       </nav>
     </div>
   </header>
@@ -18,7 +20,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped lang="scss">
-@import "./assets/scss/common.scss";
+@import './assets/scss/common.scss';
 
 header {
   display: flex;
