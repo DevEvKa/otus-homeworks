@@ -1,5 +1,11 @@
-@import "./normalize";
-@import "./base/fonts";
-@import "./base/reset";
-@import "./common/variables";
-@import "./common/mixins";
+@import './normalize';
+@import './base/fonts';
+@import './base/reset';
+@import './common/variables';
+@import './common/mixins';
+
+.page-title {
+  font-size: 28px;
+  margin-bottom: 32px;
+  font-weight: 700;
+}
