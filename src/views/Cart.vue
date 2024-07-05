@@ -4,53 +4,56 @@
     <div class="cart__body">
       <div class="cart__orders">
         <ul class="cart__orders-list">
-          <li class="cart__order">
+          <li class="cart__order" v-for="(product, index) in productsInCart" :key="index">
             <div href="#" class="cart__order-image">
-              <img
-                src="https://sun9-48.userapi.com/impg/PiH1Iyj03jWPf25V4mXMr97BU0saZfsfV60sIg/RvMERwY7FeU.jpg?size=605x807&quality=95&sign=a1ecde4851d3bcfbe1d477eff86a22d5&c_uniq_tag=0LlGsGv6y7jbq6ZUFN9pV8_j_PBwi4kyImd09l4tFDU&type=album"
-                alt="------------------"
-              />
+              <img :src="product.product.image" :alt="product.product.title" />
             </div>
-            <h5 class="cart__order-title">------------------</h5>
+            <h5 class="cart__order-title">{{ product.product.title }}</h5>
             <div class="cart__order-details">
               <div class="cart__order-counter">
-                <VButton
+                <!-- <VButton
                   label="+"
                   color="light"
                   class="cart__order-increment"
-                  @click.prevent="addProduct"
-                />
-                <p>
-                  {{ counter }}
-                </p>
-                <VButton
+                  @click.prevent="addProduct(product.product)"
+                /> -->
+                <p>{{ product.counter }} шт.</p>
+                <!-- <p>{{ getCounter(productsInCart.product) }}fghjk</p> -->
+                <!-- <VButton
                   label="-"
                   color="light"
                   class="cart__order-decrement"
                   @click.prevent="deductProduct"
-                />
+                /> -->
               </div>
               <div class="cart__order-price">
-                <span class="cart__order-amount">{{ counter * price }}</span>
+                <span class="cart__order-amount">{{
+                  product.counter * product.product.price
+                }}</span>
                 <span class="cart__order-amount">₽</span>
               </div>
-              <VButton
+              <!-- <VButton
                 label="Удалить товар"
                 color="light"
                 class="cart__order-decrement"
                 @click.prevent="deleteProduct"
-              />
+              /> -->
             </div>
           </li>
         </ul>
-        <div class="cart__total">
-          <p class="cart__total-text">Стоимость заказа</p>
-          <div class="cart__total-price">
-            <span class="cart__total-total-amount">50</span>
-            <span class="cart__total-total-amount">₽</span>
+        <div v-if="!isCartEmpty" class="cart__total">
+          <div class="cart__total-left">
+            <p class="cart__total-text">Стоимость заказа</p>
+            <div class="cart__total-price">
+              <span class="cart__total-total-amount">{{ totalPrice }}</span>
+              <span class="cart__total-total-amount">₽</span>
+            </div>
           </div>
+          <VButton label="Очистить корзину" color="light" @click.prevent="clearCart" />
         </div>
+        <div v-else class="cart__total">Ваша корзина пуста</div>
       </div>
+
       <div class="cart__form">
         <p class="cart__form-title">Оформите заказ прямо сейчас!</p>
         <form class="cart__form-form" @submit.prevent="submitForm">
@@ -86,7 +89,7 @@
             v-model:value="v.phoneField.$model"
             :error="v.phoneField.$errors"
           />
-          <VButton type="submit" label="Оформить заказ" />
+          <VButton type="submit" label="Оформить заказ" :disabled="isCartEmpty" />
         </form>
       </div>
     </div>
@@ -101,9 +104,7 @@ import { required, minLength, helpers, email } from '@vuelidate/validators'
 import VInput from '../components/VInput.vue'
 import VButton from '../components/VButton.vue'
 
-const deleteProduct = (product) => {
-  //после реализации стора здесь будет удаляться товар из корзины
-}
+const isCartEmpty = computed(() => localStorage.getItem('cart') === null)
 
 const nameField = ref('')
 const surnameField = ref('')
@@ -146,17 +147,25 @@ const submitForm = () => {
     })
 }
 
-const price = ref(30)
-const counter = ref(1)
-
-const addProduct = () => {
-  counter.value++
-}
-
-const deductProduct = () => {
-  if (counter.value > 0) {
-    counter.value--
+let productsInCart = computed(() => {
+  if (localStorage.getItem('cart') !== null) {
+    return JSON.parse(localStorage.getItem('cart'))
   }
+})
+
+const totalPrice = computed(() => {
+  let total = 0
+  if (localStorage.getItem('cart') !== null) {
+    productsInCart.value.forEach((item) => {
+      total += item.counter * item.product.price
+    })
+  }
+  return total.toFixed(2)
+})
+
+const clearCart = () => {
+  localStorage.clear()
+  alert('Пожалуйста, обновите страницу')
 }
 </script>
 
@@ -172,6 +181,7 @@ const deductProduct = () => {
     &-list {
       display: flex;
       flex-direction: column;
+      gap: 10px;
     }
   }
 
@@ -229,6 +239,7 @@ const deductProduct = () => {
 
   &__form {
     max-width: 370px;
+    height: fit-content;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -248,9 +259,9 @@ const deductProduct = () => {
 
   &__total {
     display: flex;
-    flex-direction: column;
     padding: 30px 0;
     font-size: 28px;
+    justify-content: space-between;
 
     &-price {
       display: flex;

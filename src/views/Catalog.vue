@@ -31,7 +31,7 @@
           v-for="(product, index) in filteredProducts"
           :key="index"
           :product="product"
-          @add-to-cart="addSelectedProduct"
+          @add-to-cart="addSelectedProduct(product)"
         />
       </ul>
     </div>
@@ -48,7 +48,11 @@ let products = ref([])
 
 fetch('https://fakestoreapi.com/products')
   .then((response) => response.json())
-  .then((data) => (products.value = data))
+  .then(
+    (data) => (
+      (products.value = data), localStorage.setItem('products', JSON.stringify(products.value))
+    )
+  )
 
 const searchProductDescription = ref('')
 const searchProductTitle = ref('')
@@ -70,10 +74,29 @@ const cleanFilters = () => {
   searchProductPrice.value = ''
 }
 
-const selectedProducts = ref([])
-
 const addSelectedProduct = (productData) => {
-  selectedProducts.value.push(productData)
+  if (localStorage.getItem('cart') === null) {
+    localStorage.setItem('cart', JSON.stringify([{ product: productData, counter: 1 }]))
+    return
+  }
+  let productsInCart = JSON.parse(localStorage.getItem('cart'))
+
+  let isContainProduct = false
+  let productIndex
+  productsInCart.forEach((item, index) => {
+    if (item.product.id === productData.id) {
+      isContainProduct = true
+      productIndex = index
+    }
+  })
+
+  if (isContainProduct) {
+    productsInCart[productIndex].counter++
+  } else {
+    productsInCart.push({ product: productData, counter: 1 })
+  }
+
+  localStorage.setItem('cart', JSON.stringify(productsInCart))
 }
 </script>
 
