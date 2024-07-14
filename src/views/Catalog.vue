@@ -27,39 +27,28 @@
         <VButton class="button catalog__reset-button" label="Сбросить" @click="cleanFilters" />
       </aside>
       <ul class="catalog__products">
-        <ProductCard
-          v-for="(product, index) in filteredProducts"
-          :key="index"
-          :product="product"
-          @add-to-cart="addSelectedProduct(product)"
-        />
+        <CatalogCard v-for="(product, index) in filteredProducts" :key="index" :product="product" />
       </ul>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ProductCard from '../components/pages/ProductCard.vue'
+import CatalogCard from '../components/pages/CatalogCard.vue'
 import VInput from '../components/VInput.vue'
 import VButton from '../components/VButton.vue'
 import { ref, computed } from 'vue'
+import { useCatalogStore } from '../stores/catalog'
+import { useCartStore } from '../stores/cart'
 
-let products = ref([])
-
-fetch('https://fakestoreapi.com/products')
-  .then((response) => response.json())
-  .then(
-    (data) => (
-      (products.value = data), localStorage.setItem('products', JSON.stringify(products.value))
-    )
-  )
+const productsData = useCatalogStore()
 
 const searchProductDescription = ref('')
 const searchProductTitle = ref('')
 const searchProductPrice = ref('')
 
 const filteredProducts = computed(() => {
-  return products?.value
+  return productsData.catalog
     .filter((product) =>
       product.description.toLowerCase().includes(searchProductDescription.value.toLowerCase())
     )
@@ -72,31 +61,6 @@ const filteredProducts = computed(() => {
 const cleanFilters = () => {
   searchProductTitle.value = ''
   searchProductPrice.value = ''
-}
-
-const addSelectedProduct = (productData) => {
-  if (localStorage.getItem('cart') === null) {
-    localStorage.setItem('cart', JSON.stringify([{ product: productData, counter: 1 }]))
-    return
-  }
-  let productsInCart = JSON.parse(localStorage.getItem('cart'))
-
-  let isContainProduct = false
-  let productIndex
-  productsInCart.forEach((item, index) => {
-    if (item.product.id === productData.id) {
-      isContainProduct = true
-      productIndex = index
-    }
-  })
-
-  if (isContainProduct) {
-    productsInCart[productIndex].counter++
-  } else {
-    productsInCart.push({ product: productData, counter: 1 })
-  }
-
-  localStorage.setItem('cart', JSON.stringify(productsInCart))
 }
 </script>
 

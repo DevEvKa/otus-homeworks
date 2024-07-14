@@ -4,52 +4,22 @@
     <div class="cart__body">
       <div class="cart__orders">
         <ul class="cart__orders-list">
-          <li class="cart__order" v-for="(product, index) in productsInCart" :key="index">
-            <div href="#" class="cart__order-image">
-              <img :src="product.product.image" :alt="product.product.title" />
-            </div>
-            <h5 class="cart__order-title">{{ product.product.title }}</h5>
-            <div class="cart__order-details">
-              <div class="cart__order-counter">
-                <!-- <VButton
-                  label="+"
-                  color="light"
-                  class="cart__order-increment"
-                  @click.prevent="addProduct(product.product)"
-                /> -->
-                <p>{{ product.counter }} шт.</p>
-                <!-- <p>{{ getCounter(productsInCart.product) }}fghjk</p> -->
-                <!-- <VButton
-                  label="-"
-                  color="light"
-                  class="cart__order-decrement"
-                  @click.prevent="deductProduct"
-                /> -->
-              </div>
-              <div class="cart__order-price">
-                <span class="cart__order-amount">{{
-                  product.counter * product.product.price
-                }}</span>
-                <span class="cart__order-amount">₽</span>
-              </div>
-              <!-- <VButton
-                label="Удалить товар"
-                color="light"
-                class="cart__order-decrement"
-                @click.prevent="deleteProduct"
-              /> -->
-            </div>
-          </li>
+          <CartCard
+            v-for="itemId in cartStore.idsInCart"
+            :key="itemId"
+            :item-id="itemId"
+            :count="cartStore.cartState.inCart[itemId]"
+          />
         </ul>
-        <div v-if="!isCartEmpty" class="cart__total">
+        <div v-if="cartStore.idsInCart.length" class="cart__total">
           <div class="cart__total-left">
             <p class="cart__total-text">Стоимость заказа</p>
             <div class="cart__total-price">
-              <span class="cart__total-total-amount">{{ totalPrice }}</span>
+              <span class="cart__total-total-amount">{{ cartStore.totalSum }}</span>
               <span class="cart__total-total-amount">₽</span>
             </div>
           </div>
-          <VButton label="Очистить корзину" color="light" @click.prevent="clearCart" />
+          <VButton label="Очистить корзину" color="light" @click.prevent="cartStore.clearCart" />
         </div>
         <div v-else class="cart__total">Ваша корзина пуста</div>
       </div>
@@ -89,7 +59,7 @@
             v-model:value="v.phoneField.$model"
             :error="v.phoneField.$errors"
           />
-          <VButton type="submit" label="Оформить заказ" :disabled="isCartEmpty" />
+          <VButton type="submit" label="Оформить заказ" :disabled="!cartStore.idsInCart" />
         </form>
       </div>
     </div>
@@ -103,8 +73,13 @@ import { required, minLength, helpers, email } from '@vuelidate/validators'
 
 import VInput from '../components/VInput.vue'
 import VButton from '../components/VButton.vue'
+import CartCard from '../components/pages/CartCard.vue'
 
-const isCartEmpty = computed(() => localStorage.getItem('cart') === null)
+import { useCartStore } from '@/stores/cart'
+
+const cartStore = useCartStore()
+
+// form validation.start
 
 const nameField = ref('')
 const surnameField = ref('')
@@ -147,26 +122,7 @@ const submitForm = () => {
     })
 }
 
-let productsInCart = computed(() => {
-  if (localStorage.getItem('cart') !== null) {
-    return JSON.parse(localStorage.getItem('cart'))
-  }
-})
-
-const totalPrice = computed(() => {
-  let total = 0
-  if (localStorage.getItem('cart') !== null) {
-    productsInCart.value.forEach((item) => {
-      total += item.counter * item.product.price
-    })
-  }
-  return total.toFixed(2)
-})
-
-const clearCart = () => {
-  localStorage.clear()
-  alert('Пожалуйста, обновите страницу')
-}
+// form validation.end
 </script>
 
 <style scoped lang="scss">
@@ -182,58 +138,6 @@ const clearCart = () => {
       display: flex;
       flex-direction: column;
       gap: 10px;
-    }
-  }
-
-  &__order {
-    width: 100%;
-    border: 1px solid $dark-main;
-    position: relative;
-    display: flex;
-    gap: 16px;
-    border-radius: 10px;
-    padding: 8px;
-
-    &-image {
-      width: 150px;
-      height: auto;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        transition: 0.2s;
-      }
-    }
-
-    &-title {
-      display: flex;
-      flex-grow: 1;
-    }
-
-    &-counter {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 26px;
-
-      button {
-        width: 50px;
-        height: 50px;
-      }
-    }
-
-    &-details {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 50px;
-    }
-
-    &-price {
-      display: flex;
-      gap: 8px;
-      font-size: 26px;
     }
   }
 
