@@ -1,14 +1,14 @@
 <template>
-  <a :href="`/products/${product.id}`" class="product-card">
+  <div class="product-card">
     <div class="product-card__top">
       <div class="product-card__image">
         <img :src="product.image" :alt="product.title" />
       </div>
     </div>
     <div class="product-card__bottom">
-      <h4 class="product-card__title">
+      <a :href="`/products/${product.id}`" class="product-card__title">
         {{ product.title }}
-      </h4>
+      </a>
       <div class="product-card__row">
         <p class="product-card__rating">{{ product.rating?.rate }}</p>
         <div class="product-card__price">
@@ -16,14 +16,17 @@
           <span class="product-card__amount">₽</span>
         </div>
       </div>
-      <button class="product-card__button" @click="addProductToCart(product.title, product.price)">
+      <button class="product-card__button" @click="cartStore.addToCart(product.id)">
         В корзину
       </button>
     </div>
-  </a>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useCartStore } from '@/stores/cart'
+
 type Product = {
   id: number
   title: string
@@ -41,11 +44,22 @@ const props = defineProps<{
   product: Product
 }>()
 
-const emit = defineEmits(['addToCart'])
+const cartStore = useCartStore()
 
-const addProductToCart = (title: string, price: string | number) => {
-  emit('addToCart', [title, price])
-}
+const count = ref(0)
+
+//const sum = computed(() => count.value * props.product.price)
+
+// function addToCart() {
+//   cartStore.addToCart(props.product.id)
+//   count.value = 0
+// }
+
+// const emit = defineEmits(['addToCart'])
+
+// const addProductToCart = (title: string, price: string | number) => {
+//   emit('addToCart', [title, price])
+// }
 </script>
 
 <style scoped lang="scss">
