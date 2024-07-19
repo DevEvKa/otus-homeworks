@@ -1,6 +1,11 @@
 <template>
   <button
-    :class="['button', `button_${color}`, { button_large: size === 'large' }]"
+    :class="[
+      'button',
+      `button--${color}`,
+      { 'button--large': size === 'large' },
+      `button--${type}`
+    ]"
     :disabled="disabled"
     @click="clickOnButton"
   >
@@ -25,6 +30,10 @@ const props = defineProps({
   size: {
     type: String,
     default: 'normal'
+  },
+  type: {
+    type: String,
+    default: 'normal'
   }
 })
 
@@ -46,7 +55,7 @@ const clickOnButton = () => {
   font-size: 15px;
   transition: 0.2s;
 
-  &_dark {
+  &--dark {
     background: $dark-main;
     border: 1px solid $dark-main;
     color: $light-main;
@@ -55,7 +64,7 @@ const clickOnButton = () => {
       color: $dark-main;
     }
   }
-  &_light {
+  &--light {
     background: $light-main;
     border: 1px solid $dark-main;
     color: $dark-main;
@@ -67,9 +76,23 @@ const clickOnButton = () => {
     opacity: 0.6;
     cursor: default;
   }
-  &_large {
+  &--large {
     height: 48px;
     padding: 0 30px;
+  }
+
+  &--link {
+    height: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    color: $accent-color;
+    border-bottom: 1px solid $accent-color;
+
+    &:hover {
+      color: $dark-main;
+      border-color: $dark-main;
+    }
   }
 }
 </style>
