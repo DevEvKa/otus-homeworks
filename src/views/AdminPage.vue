@@ -94,12 +94,20 @@ const rules = computed(() => ({
     minLength: helpers.withMessage(`Минимальная длина: 20 символов`, minLength(20))
   },
   priceField: {
-    required: helpers.withMessage(`Это обязательное поле`, required)
+    required: helpers.withMessage(`Это обязательное поле`, required),
+    isPositiveNumber: helpers.withMessage(
+      'Стоимость должна быть положительным числом',
+      isPositiveNumber
+    )
   },
   amountField: {
     required: helpers.withMessage(`Это обязательное поле`, required)
   }
 }))
+
+const isPositiveNumber = (value) => {
+  return value > 0 ? true : false
+}
 
 const v = useVuelidate(rules, {
   nameField,

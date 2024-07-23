@@ -22,6 +22,7 @@
           class="input catalog__filters-input"
           name="searchProductPrice"
           placeholder="Поиск по цене"
+          type="number"
           v-model:value="searchProductPrice"
         />
         <VButton class="button catalog__reset-button" label="Сбросить" @click="cleanFilters" />
@@ -39,13 +40,12 @@ import VInput from '../components/VInput.vue'
 import VButton from '../components/VButton.vue'
 import { ref, computed } from 'vue'
 import { useCatalogStore } from '../stores/catalog'
-import { useCartStore } from '../stores/cart'
 
 const productsData = useCatalogStore()
 
-const searchProductDescription = ref('')
-const searchProductTitle = ref('')
-const searchProductPrice = ref('')
+const searchProductDescription = ref<string>('')
+const searchProductTitle = ref<string>('')
+const searchProductPrice = ref<string>('')
 
 const filteredProducts = computed(() => {
   return productsData.catalog
