@@ -12,7 +12,7 @@
       <div class="product-card__row">
         <p class="product-card__rating">{{ product.rating?.rate }}</p>
         <div class="product-card__price">
-          <span class="product-card__amount">{{ product.price }}</span>
+          <span class="product-card__amount">{{ product.price.toFixed(2) }}</span>
           <span class="product-card__amount">₽</span>
         </div>
       </div>
@@ -33,10 +33,10 @@ type Product = {
   category: string
   description: string
   image: string
-  price: number | string
+  price: number
   rating: {
-    rate: number | string
-    count: number | string
+    rate: number
+    count: number
   }
 }
 

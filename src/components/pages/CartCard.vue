@@ -21,7 +21,7 @@
         />
       </div>
       <div class="cart__order-price">
-        <span class="cart__order-amount">{{ productItem.price * count }}</span>
+        <span class="cart__order-amount">{{ (productItem.price * count).toFixed(2) }}</span>
         <span class="cart__order-amount">₽</span>
       </div>
       <VButton
