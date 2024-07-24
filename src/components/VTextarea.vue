@@ -46,7 +46,7 @@ const props = defineProps({
 })
 
 const updateValue = (e) => {
-  emit('update:value', e.target.value)
+  emit('update:value', e.target?.value)
 }
 </script>
 
@@ -54,6 +54,7 @@ const updateValue = (e) => {
 .v-textarea {
   margin-bottom: 30px;
   position: relative;
+  width: 300px;
 
   &:has(.v-input__error-message) {
     .v-input__text {
@@ -111,12 +112,11 @@ const updateValue = (e) => {
   }
 
   &__error {
-    background: $danger-color;
     margin-top: 4px;
-    border-radius: 7px;
-    font-size: 13px;
-    color: #fff;
-    padding: 5px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: $danger-color;
+    padding: 6px;
   }
 }
 </style>

@@ -65,7 +65,8 @@ const updateValue = (e) => {
     }
   }
 
-  &__text {
+  &__text,
+  &__number {
     border: 1px solid $accent-color;
     padding: 0 10px;
     height: 40px;

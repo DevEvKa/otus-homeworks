@@ -2,8 +2,10 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
+import type { IProduct } from '../types/catalog.ts'
+
 export const useCatalogStore = defineStore('catalog', () => {
-  const catalog = ref([])
+  const catalog = ref<IProduct[]>([])
   const isLoading = ref(false)
 
   const getProducts = () => {
@@ -11,7 +13,6 @@ export const useCatalogStore = defineStore('catalog', () => {
     return axios
       .get('https://fakestoreapi.com/products')
       .then((response) => {
-        //catalog.value.push(response.data)
         catalog.value = response.data
       })
       .catch((error) => {
@@ -25,7 +26,7 @@ export const useCatalogStore = defineStore('catalog', () => {
 
   getProducts()
 
-  function findItem(id) {
+  function findItem(id: Number) {
     return catalog.value.find((i) => +i.id === +id)
   }
 
